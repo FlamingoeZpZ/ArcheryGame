@@ -17,7 +17,7 @@ MonoBehaviour:
   <MinDamage>k__BackingField: 25
   <MaxDamage>k__BackingField: 100
   HitSounds:
-  - sound: {fileID: 8300000, guid: a2e1048057888984594e7215d5ad242a, type: 3}
+  - sound: {fileID: 8300000, guid: fb5f87ebbfca2794db227becca732a07, type: 3}
     targetLayer:
       serializedVersion: 2
       m_Bits: 128

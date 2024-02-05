@@ -8,21 +8,27 @@ public interface IDamagable
     public float CurrentHealth { get; set;  }
     public GameObject PreviousAttacker { get; set; }
 
-    public void TakeDamage(GameObject causer, Vector3 hitLocation, Vector3 hitDirection, float amount)
+    public void TakeDamage(GameObject causer, float amount)
     {
+        if (causer == GetSelf()) return;
         PreviousAttacker = causer;
-        ApplyKnockBack(hitLocation, hitDirection);
 
         CurrentHealth -= amount;
+        Debug.Log($"Damage taken, {amount} --> {CurrentHealth}");
+        
         if (CurrentHealth <= 0)
         {
-            CurrentHealth = 0;
+            OnDie();
+        }
+        else
+        {
+            OnHit(amount);
         }
     }
 
-    public void ApplyKnockBack(Vector3 hitLocation, Vector3 hitDirection);
+    GameObject GetSelf();
 
 
     public void OnDie();
-    
+    public void OnHit(float amount);
 }

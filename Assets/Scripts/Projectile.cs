@@ -54,6 +54,7 @@ public class Projectile : MonoBehaviour
     {
         rb.isKinematic = true;
         OnHit(other,other.contacts[0].point);
+        c.enabled = false;
     }
 
     protected virtual void OnHit(Collision other, Vector3 hitPoint)
@@ -61,12 +62,17 @@ public class Projectile : MonoBehaviour
         //Take Impact Damage and bind effects
         stats.PlayOnHit(other.gameObject.layer, hitPoint);
         
-        if (!other.rigidbody) return; // Can only damage thing w/ rb
-
-        if (other.rigidbody.TryGetComponent(out IDamagable damagable))
+        if (other.transform.root.TryGetComponent(out IDamagable damagable))
         {
-            damagable.TakeDamage(Owner, hitPoint, rb.velocity, Mathf.Lerp(stats.MinDamage, stats.MaxDamage, charge));
+            damagable.TakeDamage(Owner, Mathf.Lerp(stats.MinDamage, stats.MaxDamage, charge));
         }
+
+        if (other.rigidbody)
+        {
+            other.rigidbody.AddForce(rb.velocity, ForceMode.Impulse);
+        }
+
+        transform.parent = other.transform;
     }
 
 }

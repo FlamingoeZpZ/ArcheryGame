@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 
+[DefaultExecutionOrder(-100)]
 //Attached to the camera...
 public class PlayerControls : MonoBehaviour, IPointerMoveHandler, IPointerDownHandler, IPointerUpHandler
 {

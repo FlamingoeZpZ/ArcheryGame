@@ -15,10 +15,11 @@ public class ProjectileSO : ScriptableObject
 
     public void PlayOnHit(LayerMask layer, Vector3 position)
     {
+        int val = 1 << layer;
         foreach (AudioPairing ap in HitSounds)
         {
-            Debug.Log(layer.value + ", " +  ap.targetLayer.value);
-            if (layer == ap.targetLayer)
+            Debug.Log(val + ", " +  ap.targetLayer.value);
+            if (val == ap.targetLayer)
             {
                 AudioSource.PlayClipAtPoint(ap.sound, position);
                 return;

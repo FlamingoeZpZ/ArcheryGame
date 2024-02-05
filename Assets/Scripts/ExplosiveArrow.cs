@@ -13,16 +13,20 @@ public class ExplosiveArrow : Projectile
             
         foreach (Collider c in cols)
         {
-            if (!c.attachedRigidbody) return;
-            if (c.attachedRigidbody.TryGetComponent(out IDamagable ctx))
+            Vector3 direction = c.transform.position - hitPoint;
+            float dist = Mathf.Sqrt(direction.x * direction.x + direction.y * direction.y +
+                                    direction.z * direction.z);
+            Vector3 normalized = direction / dist;
+            float perc = explosionStats.DamageFallOff.Evaluate(1-Mathf.Min(1,dist/explosionStats.ExplosionRadius));
+
+            if (c.transform.root.TryGetComponent(out IDamagable ctx))
             {
-                Vector3 direction = c.ClosestPoint(hitPoint) - hitPoint;
-                float dist = Mathf.Sqrt(direction.x * direction.x + direction.y * direction.y +
-                                        direction.z * direction.z);
-                Vector3 normalized = direction / dist;
-                float perc = explosionStats.DamageFallOff.Evaluate(1-Mathf.Min(1,dist/explosionStats.ExplosionRadius));
-                
-                ctx.TakeDamage(Owner, hitPoint , normalized * explosionStats.Force * perc, explosionStats.Damage );
+                ctx.TakeDamage(Owner , explosionStats.Damage );
+            }
+            
+            if (other.rigidbody)
+            {
+                other.rigidbody.AddForce(normalized * explosionStats.Force * perc, ForceMode.Impulse);
             }
         }
         Destroy(gameObject);

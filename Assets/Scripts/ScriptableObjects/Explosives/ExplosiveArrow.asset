@@ -39,6 +39,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  effect: {fileID: 0}
-  sfx: {fileID: 8300000, guid: 46705fa14a18aad4f96a49fe40dbdd0a, type: 3}
-  lifeTime: 3
+  effect: {fileID: 4651781101871826119, guid: f896457bf106ae54da8818e9f5f627f0, type: 3}
+  sfx: {fileID: 8300000, guid: 64988aa1296189643b760d4d8c644a20, type: 3}
+  lifeTime: 1

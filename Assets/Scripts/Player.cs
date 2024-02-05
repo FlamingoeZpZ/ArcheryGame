@@ -10,14 +10,15 @@ public class Player : MonoBehaviour, IDamagable
 
     [Header("Weapons")]
     [SerializeField] private Weapon weapon;
-    
     [field: SerializeField] public float MaxHealth { get; set; }
     public float CurrentHealth { get; set; }
     public GameObject PreviousAttacker { get; set; }
+
+    public static Transform PlayerTransform;
     
     
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         PlayerControls.Instance.MouseMoveDelta += Aim;
         PlayerControls.Instance.OnMousePressed += BeginFire;
@@ -27,6 +28,7 @@ public class Player : MonoBehaviour, IDamagable
         
         weapon.Init(gameObject);
         CurrentHealth = MaxHealth;
+        PlayerTransform = transform;
     }
 
 
@@ -49,14 +51,20 @@ public class Player : MonoBehaviour, IDamagable
         weapon.EndFire();
     }
 
-    public void ApplyKnockBack(Vector3 hitLocation, Vector3 hitDirection)
+    public GameObject GetSelf()
     {
-        //Ignored
+        return gameObject;
     }
 
     public void OnDie()
     {
         print("Death");
+    }
+
+    public void OnHit(float amount)
+    {
+        // Update the healthbar??
+        
     }
 
     public void SwapWeapon(Weapon w)

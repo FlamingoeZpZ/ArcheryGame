@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4839572531540142}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Arrowhead_place
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 4668755794025904}
   - component: {fileID: 33752806222745534}
   - component: {fileID: 23776686286094756}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: arrowhead
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -126,7 +126,7 @@ GameObject:
   - component: {fileID: 33521083997809630}
   - component: {fileID: 23773141280257056}
   - component: {fileID: 161416569903279163}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Arrow_stick
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -313,7 +313,7 @@ GameObject:
   - component: {fileID: 4534147065827568}
   - component: {fileID: 7635321482106484655}
   - component: {fileID: 8417088528551069394}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -375,7 +375,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7240817f0d4df6e469afaeb78d4bc0fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stats: {fileID: 11400000, guid: 1deff2eb46840a94bb636e1bf0192c77, type: 2}
+  <Stats>k__BackingField: {fileID: 11400000, guid: 1deff2eb46840a94bb636e1bf0192c77,
+    type: 2}
 --- !u!1 &1067258248415191207
 GameObject:
   m_ObjectHideFlags: 0
@@ -386,7 +387,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9129390568575178037}
   - component: {fileID: 4045817741703201382}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -1,32 +1,32 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
 public class Enemy : MonoBehaviour, IDamagable
 {
-    [field: SerializeField] public float MaxHealth { get; set; }
+    public float MaxHealth
+    {
+        get => stats.MaxHealth;
+        set { } // Do nothing.
+    }
+
     public float CurrentHealth { get; set; }
     public GameObject PreviousAttacker { get; set; }
     
     private NavMeshAgent _agent;
     private Animator _animator;
 
-    [SerializeField] private float phaseThroughFloorTime;
-    [SerializeField] private float fallSpeed;
-    [SerializeField] private float minAttackTime;
-    [SerializeField] private float maxAttackTime;
+    [SerializeField] private EnemySO stats;
 
     private float remainingAttackTime;
     
     private bool isIdle;
 
-    private List<Rigidbody> cringe = new();
+    private Rigidbody[] cringe;
+    private bool isDead;
 
-    
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -38,6 +38,7 @@ public class Enemy : MonoBehaviour, IDamagable
 
     private void Update()
     {
+        if (isDead) return;
         if (!isIdle)
         {
             Traversing();
@@ -59,7 +60,7 @@ public class Enemy : MonoBehaviour, IDamagable
 
     private void GenerateAttackTime()
     {
-        remainingAttackTime = Random.Range(minAttackTime, maxAttackTime);
+        remainingAttackTime = Random.Range(stats.MinAttackTime, stats.MaxAttackTime);
     }
 
     private void Traversing()
@@ -73,7 +74,7 @@ public class Enemy : MonoBehaviour, IDamagable
         }
     }
 
-    public void GroundPound()
+    public void Slam()
     {
         Collider []c = Physics.OverlapSphere(transform.position, 5, StaticUtilities.PlayerLayer);
 
@@ -109,16 +110,35 @@ public class Enemy : MonoBehaviour, IDamagable
 
     public void OnDie()
     {
+        
         //Ragdoll
+        isDead = true;
         _animator.enabled = false;
         _agent.enabled = false;
-        foreach (var rb in GetComponentsInChildren<Rigidbody>())
+       
+        if (cringe == null)
+        {
+            Rigidbody[] rbs = GetComponentsInChildren<Rigidbody>();
+            cringe = rbs;
+            if (PreviousAttacker.TryGetComponent(out Player p))
+            {
+                p.AddScore(stats.Value);
+                stats.OnDeath(p);
+            }
+        }
+        else
+        {
+            //Reset the sink into ground timer
+            StopAllCoroutines();
+        }
+
+        foreach (var rb in cringe)
         {
             rb.isKinematic = false;
-            cringe.Add(rb);
         }
 
         StartCoroutine(GoThroughFloor());
+       
     }
 
     public void OnHit(float amount)
@@ -139,7 +159,7 @@ public class Enemy : MonoBehaviour, IDamagable
     }
     private IEnumerator GoThroughFloor()
     {
-        yield return new WaitForSeconds(phaseThroughFloorTime);
+        yield return new WaitForSeconds(stats.PhaseThroughFloorTime);
 
         foreach (Rigidbody rb in cringe)
         {
@@ -148,7 +168,7 @@ public class Enemy : MonoBehaviour, IDamagable
         
         while (true)
         {
-            transform.position += Vector3.down * (Time.deltaTime * fallSpeed);
+            transform.position += Vector3.down * (Time.deltaTime * stats.FallSpeed);
             if (transform.position.y < -5)
             {
                 Destroy(gameObject);    

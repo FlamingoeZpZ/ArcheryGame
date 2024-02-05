@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour, IDamagable
@@ -15,8 +17,22 @@ public class Player : MonoBehaviour, IDamagable
     public GameObject PreviousAttacker { get; set; }
 
     public static Transform PlayerTransform;
-    
-    
+
+    //public readonly Dictionary<Projectile, int> AmmoCounts = new();
+    /*
+    private AmmoInfo[] startingAmmos;
+
+  
+    [Serializable]
+    public struct AmmoInfo
+    {
+        public Projectile ammoType;
+        public int startingAmount;
+    }
+    */
+
+
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -25,8 +41,18 @@ public class Player : MonoBehaviour, IDamagable
         PlayerControls.Instance.OnMouseReleased += EndFire;
         PlayerControls.Instance.OnSwapWeapon += SwapWeapon;
         PlayerControls.Instance.OnSwapProjectile += SwapProjectile;
+/*
+        foreach (AmmoInfo ammoInfo in startingAmmos)
+        {
+            AmmoCounts.Add(ammoInfo.ammoType, ammoInfo.startingAmount);
+        }
+*/
+
+        //This swaps in the current weapon, but also updates the ammo shenanigans.
+        //PlayerControls.Instance.OnSwapWeapon(weapon);
         
         weapon.Init(gameObject);
+        
         CurrentHealth = MaxHealth;
         PlayerTransform = transform;
     }
@@ -43,6 +69,8 @@ public class Player : MonoBehaviour, IDamagable
 
     private void BeginFire()
     {
+        //if (AmmoCounts[weapon.ProjectileType] > 0)
+        //    AmmoCounts[weapon.ProjectileType] -= 1;
         weapon.BeginFire();
     }
 
@@ -59,12 +87,13 @@ public class Player : MonoBehaviour, IDamagable
     public void OnDie()
     {
         print("Death");
+        PlayerControls.Instance.OnDeath();
     }
 
     public void OnHit(float amount)
     {
         // Update the healthbar??
-        
+        PlayerControls.Instance.SetHealth(CurrentHealth/ MaxHealth);
     }
 
     public void SwapWeapon(Weapon w)
@@ -73,6 +102,7 @@ public class Player : MonoBehaviour, IDamagable
         Transform wepParent = weapon.transform.parent;
         Destroy(weapon.gameObject);
         weapon = Instantiate(w, wepParent);
+        weapon.Init(gameObject);
     }
 
     public void SwapProjectile(Projectile p)
@@ -81,4 +111,28 @@ public class Player : MonoBehaviour, IDamagable
         weapon.SetProjectile(p);
     }
 
+    //UI affecting
+    public void AddScore(float statsValue)
+    {
+        PlayerControls.Instance.AddScore(statsValue);
+    }
+
+    /*
+    public void GiveAmmo(Projectile dtDrop, int dtAmount)
+    {
+        //Add ammo into that dictionary.
+        if (!AmmoCounts.TryGetValue(dtDrop, out var count))
+        {
+            AmmoCounts.Add(dtDrop, dtAmount);
+            //Add new button in UI.
+            return;
+        }
+        
+
+        if(count < 0) return; // Do not allow this to work if value is negative.
+        AmmoCounts[dtDrop] = count + dtAmount;
+        
+        //Update the UI.
+        
+    } */
 }

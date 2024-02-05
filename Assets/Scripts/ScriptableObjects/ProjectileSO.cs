@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "MyStats/Projectile", menuName = "MyStats/Projectile", order = 20)]
 public class ProjectileSO : ScriptableObject
@@ -10,7 +11,9 @@ public class ProjectileSO : ScriptableObject
     [field: SerializeField] public float MaxSpeed { get; private set; }
     [field: SerializeField] public float MinDamage { get; private set; }
     [field: SerializeField] public float MaxDamage { get; private set; }
-
+    
+    [field: SerializeField] public Sprite Icon { get; private set; }
+    
     [SerializeField] private AudioPairing[] HitSounds;
 
     public void PlayOnHit(LayerMask layer, Vector3 position)
@@ -34,4 +37,5 @@ public class ProjectileSO : ScriptableObject
         public LayerMask targetLayer;
     }
 
+    
 }

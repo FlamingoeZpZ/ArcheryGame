@@ -4,9 +4,9 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))] // Forced to rigidbody
 public class Projectile : MonoBehaviour
 {
-    [SerializeField] private ProjectileSO stats;
-    
-    
+    [field: SerializeField] public ProjectileSO Stats { get; private set; }
+
+
     protected GameObject Owner;
     private Rigidbody rb;
     private TrailRenderer tr;
@@ -24,9 +24,9 @@ public class Projectile : MonoBehaviour
     {
         charge = chargePercent; 
         
-        print(Mathf.Lerp(stats.MinSpeed, stats.MaxSpeed, charge));
+        print(Mathf.Lerp(Stats.MinSpeed, Stats.MaxSpeed, charge));
         
-        rb.AddForce(transform.forward * Mathf.Lerp(stats.MinSpeed, stats.MaxSpeed, charge), ForceMode.Impulse);
+        rb.AddForce(transform.forward * Mathf.Lerp(Stats.MinSpeed, Stats.MaxSpeed, charge), ForceMode.Impulse);
         Owner = owner;
     }
 
@@ -53,6 +53,7 @@ public class Projectile : MonoBehaviour
     private void OnCollisionEnter(Collision other)
     {
         rb.isKinematic = true;
+        Debug.Log("I hit: " + other.gameObject.name);
         OnHit(other,other.contacts[0].point);
         c.enabled = false;
     }
@@ -60,11 +61,11 @@ public class Projectile : MonoBehaviour
     protected virtual void OnHit(Collision other, Vector3 hitPoint)
     {
         //Take Impact Damage and bind effects
-        stats.PlayOnHit(other.gameObject.layer, hitPoint);
+        Stats.PlayOnHit(other.gameObject.layer, hitPoint);
         
         if (other.transform.root.TryGetComponent(out IDamagable damagable))
         {
-            damagable.TakeDamage(Owner, Mathf.Lerp(stats.MinDamage, stats.MaxDamage, charge));
+            damagable.TakeDamage(Owner, Mathf.Lerp(Stats.MinDamage, Stats.MaxDamage, charge));
         }
 
         if (other.rigidbody)
@@ -72,6 +73,7 @@ public class Projectile : MonoBehaviour
             other.rigidbody.AddForce(rb.velocity, ForceMode.Impulse);
         }
 
+        transform.position = hitPoint;
         transform.parent = other.transform;
     }
 

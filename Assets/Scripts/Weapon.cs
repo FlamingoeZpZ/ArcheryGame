@@ -22,6 +22,7 @@ public class Weapon : MonoBehaviour
     private AudioSource _bowAudioSource;
     private GameObject _owner;
     private Projectile fake;
+    public Projectile ProjectileType => projectile;
 
     public void Init(GameObject owner)
     {

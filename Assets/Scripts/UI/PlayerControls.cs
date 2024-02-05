@@ -1,7 +1,11 @@
 using System;
+using System.Globalization;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 [DefaultExecutionOrder(-100)]
 //Attached to the camera...
@@ -14,8 +18,15 @@ public class PlayerControls : MonoBehaviour, IPointerMoveHandler, IPointerDownHa
     [NonSerialized] public Action OnMouseReleased;
     
     [NonSerialized] public Action<Weapon> OnSwapWeapon; 
-    [NonSerialized] public Action<Projectile> OnSwapProjectile; 
-    
+    [NonSerialized] public Action<Projectile> OnSwapProjectile;
+
+    [SerializeField] private GameObject restartButton;
+    [SerializeField] private Slider healthBar;
+    [SerializeField] private TextMeshProUGUI score;
+
+    private float scoreNum;
+    private bool isDead;
+
     private void Awake()
     {
         if (Instance && Instance != this)
@@ -27,17 +38,17 @@ public class PlayerControls : MonoBehaviour, IPointerMoveHandler, IPointerDownHa
 
     public void OnPointerMove(PointerEventData eventData)
     {
-        MouseMoveDelta?.Invoke(eventData.delta);
+        if(!isDead) MouseMoveDelta?.Invoke(eventData.delta);
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        OnMousePressed?.Invoke();
+        if(!isDead)OnMousePressed?.Invoke();
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        OnMouseReleased?.Invoke();
+        if(!isDead)OnMouseReleased?.Invoke();
     }
     
     public void SwapWeapon(Weapon wo)
@@ -48,5 +59,29 @@ public class PlayerControls : MonoBehaviour, IPointerMoveHandler, IPointerDownHa
     public void SwapProjectile(Projectile wo)
     {
         OnSwapProjectile(wo);
+    }
+
+    public void OnDeath()
+    {
+        SetHealth(0);
+        restartButton.SetActive(true);
+        isDead = true;
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    public void SetHealth(float currentHealth)
+    {
+        healthBar.value = currentHealth;
+    }
+
+    public void AddScore(float statsValue)
+    {
+        if (isDead) return;
+        scoreNum += statsValue;
+        score.text = scoreNum.ToString(CultureInfo.InvariantCulture);
     }
 }

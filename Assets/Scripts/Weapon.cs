@@ -6,7 +6,7 @@ using UnityEngine;
 //TODO add splines
 public class Weapon : MonoBehaviour
 {
-    [SerializeField] private Transform firePoint;
+    public Transform firePoint;
     [SerializeField] protected WeaponSO weaponStats;
     [SerializeField] private Projectile projectile;
 
@@ -23,6 +23,14 @@ public class Weapon : MonoBehaviour
     private GameObject _owner;
     private Projectile fake;
     public Projectile ProjectileType => projectile;
+    public Action OnCanShoot { get; set; }
+    public Action OnShoot { get; set; }
+
+    public float CurrentFirePower() => Mathf.Lerp(projectile.Stats.MinSpeed, projectile.Stats.MaxSpeed,
+        (_currentFireDuration / weaponStats.FullChargeTime));
+    
+   
+    
 
     public void Init(GameObject owner)
     {
@@ -45,6 +53,15 @@ public class Weapon : MonoBehaviour
         _bowAudioSource.clip = clipPullBack;
         _bowAudioSource.Play();
         //_bowAudioSource.loop = true;
+        float val = _currentFireDuration / weaponStats.FullChargeTime;
+        while (val < weaponStats.MinChargePercent)
+        {
+            _currentFireDuration += Time.deltaTime;
+            val = _currentFireDuration / weaponStats.FullChargeTime; // A bit cheaper than doing it twice.
+            _animator.SetFloat(StaticUtilities.ChargePercentID ,val);
+            yield return null;
+        }
+        OnCanShoot?.Invoke();
         while (_currentFireDuration < weaponStats.FullChargeTime)
         {
             _currentFireDuration += Time.deltaTime;
@@ -63,6 +80,7 @@ public class Weapon : MonoBehaviour
         StartCoroutine(FireTimer());
         _animator.SetBool(StaticUtilities.IsFiringID ,true);
         isFiring = true;
+        
     }
 
     public void EndFire()
@@ -100,6 +118,11 @@ public class Weapon : MonoBehaviour
 
     }
 
+    public bool CanFire()
+    {
+        return CanFire(_currentFireDuration / weaponStats.FullChargeTime);
+    }
+
     protected virtual bool CanFire(float percent)
     {
         return percent >= weaponStats.MinChargePercent;
@@ -111,6 +134,7 @@ public class Weapon : MonoBehaviour
         if (CanFire(firePercent))
         {
             Fire(firePercent);
+            OnShoot.Invoke();
         }
         else
         {

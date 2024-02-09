@@ -1908,7 +1908,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.33354706, y: 0.35689756, z: 0.21634588}
+  m_Size: {x: 0.42, y: 0.72, z: 0.21634588}
   m_Center: {x: -0.0079289675, y: 0.1296335, z: -0.012222089}
 --- !u!54 &681790981153620203
 Rigidbody:
@@ -2022,8 +2022,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.083938636
-  m_Center: {x: 0, y: 0.083938636, z: 0}
+  m_Radius: 0.19
+  m_Center: {x: 0, y: 0.02, z: 0}
 --- !u!54 &4037131566517081415
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2063,7 +2063,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0, y: 0, z: 0}
+  m_ConnectedAnchor: {x: -0.00728578, y: 0.18897639, z: 0.033422817}
   serializedVersion: 2
   m_SwingAxis: {x: 0, y: 0, z: 1}
   m_TwistLimitSpring:

@@ -34,10 +34,12 @@ public class PlayerControls : MonoBehaviour, IPointerMoveHandler, IPointerDownHa
             Destroy(Instance.gameObject);
         }
         Instance = this;
+        print("Active");
     }
 
     public void OnPointerMove(PointerEventData eventData)
     {
+        print("?");
         if(!isDead) MouseMoveDelta?.Invoke(eventData.delta);
     }
 

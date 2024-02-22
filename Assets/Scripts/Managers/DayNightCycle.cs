@@ -1,17 +1,16 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
 
 [RequireComponent(typeof(Light))]
 public class DayNightCycle : MonoBehaviour
 {
     [SerializeField] private Material skyboxMaterial;
-    [SerializeField] private float dayDuration;
     [SerializeField] private float spinSpeedMul;
     [SerializeField, Range(0,2)] private float maxExposure;
     [SerializeField, Range(0,2)] private float minExposure;
+    
+    public static float DayDuration;
+    
     
     [SerializeField] private Color dayTint;
     [SerializeField] private Color nightTint;
@@ -25,7 +24,7 @@ public class DayNightCycle : MonoBehaviour
 
     public static Action OnDayEnd;
 
-    public static bool IsActive = true;
+    public static bool IsActive = false;
 
     private static float dayProgression;
     public static float GetProgression() => dayProgression;
@@ -33,6 +32,12 @@ public class DayNightCycle : MonoBehaviour
     private void Start()
     {
         _sun = GetComponent<Light>();
+        GameManager.OnRoundBegin += BeginDay;
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.OnRoundBegin -= BeginDay; //if we're destroyed, we shouldn't be doing this.
     }
 
     // Update is called once per frame
@@ -46,7 +51,7 @@ public class DayNightCycle : MonoBehaviour
        
        if (!IsActive) return;
         UpdateSun();
-        if (_currentTime > dayDuration)
+        if (_currentTime > DayDuration)
         {
             EndDay();
         }
@@ -54,7 +59,7 @@ public class DayNightCycle : MonoBehaviour
 
     private void UpdateSun()
     {
-        dayProgression = _currentTime / dayDuration;
+        dayProgression = _currentTime / DayDuration;
         
         
         skyboxMaterial.SetFloat(Exposure, Mathf.Sin(dayProgression*Mathf.PI)*maxExposure + minExposure);
@@ -68,7 +73,13 @@ public class DayNightCycle : MonoBehaviour
     {
         OnDayEnd?.Invoke();
         UpdateSun();
-        _currentTime = 0;
         IsActive = false;
+    }
+
+    private void BeginDay()
+    {
+        _currentTime = 0;
+        IsActive = true;
+        UpdateSun();
     }
 }

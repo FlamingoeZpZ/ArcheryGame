@@ -24,19 +24,13 @@ namespace UI
                 Destroy(instance.gameObject);
             }
             instance = this;
-            PlayerControls.Instance.OnSwapWeapon += SetWeapon;
-        }
-
-        private void OnDestroy()
-        {
-            //Clean up garbage
-            PlayerControls.Instance.OnSwapWeapon -= SetWeapon;
+            //PlayerControls.Instance.OnSwapWeapon += SetWeapon;
         }
 
         private void AddProjectileType(Projectile projectile, int amount)
         {
             Button btn = Instantiate(prefab, parent);
-            btn.onClick.AddListener(() => PlayerControls.Instance.OnSwapProjectile(projectile));
+            //btn.onClick.AddListener(() => PlayerControls.Instance.OnSwapProjectile(projectile));
             btn.transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = projectile.Stats.Icon;
             TextMeshProUGUI tmp = btn.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
             tmp.text = amount.ToString();
@@ -69,11 +63,12 @@ namespace UI
             }*/
         }
 
+        /*
         public void UpdateAmmo(string id, int value)
         {
             
         }
-
+        */
 
 
     }

@@ -1,89 +1,48 @@
-using System;
-using System.Globalization;
-using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
 
-[DefaultExecutionOrder(-100)]
-//Attached to the camera...
-public class PlayerControls : MonoBehaviour, IPointerMoveHandler, IPointerDownHandler, IPointerUpHandler
+public class PlayerControls : MonoBehaviour
 {
-    public static PlayerControls Instance { get; private set; }
-
-    [NonSerialized] public Action<Vector2> MouseMoveDelta;
-    [NonSerialized] public Action OnMousePressed;
-    [NonSerialized] public Action OnMouseReleased;
     
-    [NonSerialized] public Action<Weapon> OnSwapWeapon; 
-    [NonSerialized] public Action<Projectile> OnSwapProjectile;
+    //NOTE:
+    //Having this as it's own component it helpful because it allows you to keep your code compartmentalized, and allows you to disable components at specific times.
+    //However, it costs more to have this be outside of player.
+    //The choice will lie in the developers ideals.
 
-    [SerializeField] private GameObject restartButton;
-    [SerializeField] private Slider healthBar;
-    [SerializeField] private TextMeshProUGUI score;
+    private Player _p;
+    private static PlayerControls _self;
+    
+    public static void DisableControls()
+    {
+        _self.enabled = false;
+        Cursor.visible = true;
+    }
 
-    private float scoreNum;
-    private bool isDead;
+    public static void EnableControls()
+    {
+        _self.enabled = true;
+        Cursor.visible = false;
+    }
+
 
     private void Awake()
     {
-        if (Instance && Instance != this)
-        {
-            Destroy(Instance.gameObject);
-        }
-        Instance = this;
-        print("Active");
+        _p = GetComponent<Player>();
+        _self = this;
+        enabled = false;
     }
 
-    public void OnPointerMove(PointerEventData eventData)
+    private void Update()
     {
-        print("?");
-        if(!isDead) MouseMoveDelta?.Invoke(eventData.delta);
+        //Old input system. Mouse X and Mouse Y also simulate fingers.
+        _p.Aim(new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")));
+
+#if UNITY_EDITOR || UNITY_STANDALONE // Windows or Editor
+        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) _p.BeginFire();
+        else if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1)) _p.EndFire();
+#else
+        if (Input.GetTouch(0).phase == TouchPhase.Began) p.BeginFire();
+        if (Input.GetTouch(0).phase == TouchPhase.Ended) p.BeginFire();
+#endif
     }
 
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        if(!isDead)OnMousePressed?.Invoke();
-    }
-
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        if(!isDead)OnMouseReleased?.Invoke();
-    }
-    
-    public void SwapWeapon(Weapon wo)
-    {
-        OnSwapWeapon(wo);
-    }
-    
-    public void SwapProjectile(Projectile wo)
-    {
-        OnSwapProjectile(wo);
-    }
-
-    public void OnDeath()
-    {
-        SetHealth(0);
-        restartButton.SetActive(true);
-        isDead = true;
-    }
-
-    public void Restart()
-    {
-        SceneManager.LoadScene(0);
-    }
-
-    public void SetHealth(float currentHealth)
-    {
-        healthBar.value = currentHealth;
-    }
-
-    public void AddScore(float statsValue)
-    {
-        if (isDead) return;
-        scoreNum += statsValue;
-        score.text = scoreNum.ToString(CultureInfo.InvariantCulture);
-    }
 }

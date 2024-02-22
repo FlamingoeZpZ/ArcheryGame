@@ -11,6 +11,7 @@ public class ProjectileSO : ScriptableObject
     [field: SerializeField] public float MaxSpeed { get; private set; }
     [field: SerializeField] public float MinDamage { get; private set; }
     [field: SerializeField] public float MaxDamage { get; private set; }
+    [field: SerializeField] public float Cost { get; private set; }
     
     [field: SerializeField] public Sprite Icon { get; private set; }
     
@@ -21,7 +22,6 @@ public class ProjectileSO : ScriptableObject
         int val = 1 << layer;
         foreach (AudioPairing ap in HitSounds)
         {
-            Debug.Log(val + ", " +  ap.targetLayer.value);
             if (val == ap.targetLayer)
             {
                 AudioSource.PlayClipAtPoint(ap.sound, position);

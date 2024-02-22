@@ -16,12 +16,12 @@ public class Weapon : MonoBehaviour
     [SerializeField] private AudioClip clipRelease;
     
     private float _currentFireDuration; // Bind UI event to get the charge.
-    private bool isFiring;
+    private bool _isFiring;
     
     private Animator _animator;
     private AudioSource _bowAudioSource;
     private GameObject _owner;
-    private Projectile fake;
+    private Projectile _fake;
     public Projectile ProjectileType => projectile;
     public Action OnCanShoot { get; set; }
     public Action OnShoot { get; set; }
@@ -41,8 +41,8 @@ public class Weapon : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
         _bowAudioSource = GetComponent<AudioSource>();
-        fake = Instantiate(projectile, firePoint.position, firePoint.rotation, firePoint);
-        fake.enabled = false;
+        _fake = Instantiate(projectile, firePoint.position, firePoint.rotation, firePoint);
+        _fake.enabled = false;
         //p.transform.eulerAngles += new Vector3(0, -90, 0);
     }
 
@@ -79,7 +79,7 @@ public class Weapon : MonoBehaviour
         print("Begin Firing");
         StartCoroutine(FireTimer());
         _animator.SetBool(StaticUtilities.IsFiringID ,true);
-        isFiring = true;
+        _isFiring = true;
         
     }
 
@@ -89,7 +89,7 @@ public class Weapon : MonoBehaviour
         StopAllCoroutines();
         TryFire();
         //_bowAudioSource.loop = false;
-        isFiring = false;
+        _isFiring = false;
     }
 
     protected virtual void Fire(float percent)
@@ -107,7 +107,7 @@ public class Weapon : MonoBehaviour
         _bowAudioSource.loop = false;
         _bowAudioSource.PlayDelayed(0.05f);
        
-        if (weaponStats.IsFullAuto && isFiring)
+        if (weaponStats.IsFullAuto && _isFiring)
         {
             StartCoroutine(FireTimer());
         }
@@ -146,7 +146,7 @@ public class Weapon : MonoBehaviour
     {
         projectile = projectile1;
         
-        fake = Instantiate(projectile, firePoint.position, firePoint.rotation, firePoint);
-        fake.enabled = false;
+        _fake = Instantiate(projectile, firePoint.position, firePoint.rotation, firePoint);
+        _fake.enabled = false;
     }
 }

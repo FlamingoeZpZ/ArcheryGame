@@ -1,75 +1,69 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]
 public class Parabola : MonoBehaviour
 {
     [SerializeField, Min(0)] private int numNodes;
-    private LineRenderer lr;
+    [SerializeField, Range(0.1f, 10)] private float step;
 
-    [SerializeField, Range(0.1f, 10)] private float k;
-
-    private Weapon weapon;
-    private Vector3[] positions;
-    private static readonly float grav = Physics.gravity.y/2;
+    private Weapon _weapon;
+    private LineRenderer _lr;
+    private Vector3[] _positions;
+    
+    private static readonly float Grav = Physics.gravity.y/2;
     
     public void Init(Weapon w)
     {
-        weapon = w;
-        lr.enabled = true;
+        _weapon = w;
+        _lr.enabled = true;
         transform.SetParent(w.firePoint);
         transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
 
-        weapon.OnCanShoot += () => lr.enabled = true;
-        weapon.OnShoot += () => lr.enabled = false;
+        _weapon.OnCanShoot += () => _lr.enabled = true;
+        _weapon.OnShoot += () => _lr.enabled = false;
     }
 
     private void OnDestroy()
     {
-        weapon.OnCanShoot += () => lr.enabled = true;
-        weapon.OnShoot += () => lr.enabled = false;
+        _weapon.OnCanShoot += () => _lr.enabled = true;
+        _weapon.OnShoot += () => _lr.enabled = false;
     }
 
 
     // Start is called before the first frame update
     void Start()
     {
-        lr = GetComponent<LineRenderer>();
-        lr.enabled = false;
-        positions = new Vector3[numNodes];
-        lr.positionCount = numNodes;
+        _lr = GetComponent<LineRenderer>();
+        _lr.enabled = false;
+        _positions = new Vector3[numNodes];
+        _lr.positionCount = numNodes;
         Init(transform.root.GetComponentInChildren<Weapon>());
-        positions[0].Set(0,0,0);
+        _positions[0].Set(0,0,0);
         
     }
 
     // Update is called once per frame
     void LateUpdate()
     {
-        if (!lr.enabled) return;
+        if (!_lr.enabled) return;
 
         
         //The arrow has a forward force of weapon.currentFirePower();
         //The arrow has a downward force of gravity.
         //Then we need to set N nodes. X is sampling that value.
-        float n = weapon.CurrentFirePower();
-        Vector3 velocity = weapon.firePoint.right * n;
+        float n = _weapon.CurrentFirePower();
+        float velocity = _weapon.firePoint.right.y * n;
         for (int i = 1; i < numNodes; i++)
         {
-            float time = i * k;
-            float y = velocity.y * time + grav * time * time;
-            float z = velocity.z * time;
-
-            Vector3 point = new Vector3(0, y, z);
-
-            positions[i] = point;
+            float time = i * step;
+            float y = Grav * time * time + velocity * time; //ax^2 + bx + c (But C is automatically done because it's our position)
+            Vector3 point = new Vector3(0, y, time * n);
+            _positions[i] = point;
            // positions[i].Set(0,  n * i * i + grav * i, n*i);
         }
         
         
-        lr.SetPositions(positions);
+        _lr.SetPositions(_positions);
         //We need to set each point based on a parabola.
         //y = ax^2 + bx + c
         //X is distance,

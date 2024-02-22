@@ -15,11 +15,9 @@ MonoBehaviour:
   <MaxHealth>k__BackingField: 150
   <PhaseThroughFloorTime>k__BackingField: 3
   <FallSpeed>k__BackingField: 0.1
-  <MinAttackTime>k__BackingField: 2
-  <MaxAttackTime>k__BackingField: 4
+  <Damage>k__BackingField: 1
   <Value>k__BackingField: 100
-  deathTable:
-  - spawnChance: 0.1
-    drop:
-      m_PersistentCalls:
-        m_Calls: []
+  <AnimationSpeed>k__BackingField: 1
+  <HitNoise>k__BackingField: {fileID: 8300000, guid: 18d83ce60c30bb348b7356ed453667cb,
+    type: 3}
+  <StunTolerance>k__BackingField: 0.1

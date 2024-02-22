@@ -1,8 +1,9 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
-using Random = UnityEngine.Random;
 
+[DefaultExecutionOrder(100)]
 public class Enemy : MonoBehaviour, IDamagable
 {
     public float MaxHealth
@@ -12,20 +13,27 @@ public class Enemy : MonoBehaviour, IDamagable
     }
 
     public float CurrentHealth { get; set; }
-    public GameObject PreviousAttacker { get; set; }
+    
+    
+    //public GameObject PreviousAttacker { get; set; }
     
     private NavMeshAgent _agent;
     private Animator _animator;
 
-    [SerializeField] private EnemySO stats;
+    [SerializeField] private EnemySo stats;
 
-    private float remainingAttackTime;
+    private float _remainingAttackTime;
     
-    private bool isIdle;
+    private bool _isIdle;
 
-    private Rigidbody[] cringe;
-    private bool isDead;
+    public bool IsDead { get; private set; }
 
+    public static int EnemyCount {get; private set;}
+
+    public static Action<Enemy> OnDeath;
+
+    public EnemySo EnemyStats => stats;
+   
 
     // Start is called before the first frame update
     void Start()
@@ -33,110 +41,21 @@ public class Enemy : MonoBehaviour, IDamagable
         CurrentHealth = MaxHealth;
         _agent = GetComponent<NavMeshAgent>();
         _animator = GetComponent<Animator>();
-        _agent.SetDestination(Player.PlayerTransform.position);
-    }
-
-    private void Update()
-    {
-        if (isDead) return;
-        if (!isIdle)
-        {
-            Traversing();
-        }
-        else
-        {
-            InCombat();
-        }
-    }
-
-    private void InCombat()
-    {
-        remainingAttackTime -= Time.deltaTime;
-        if (remainingAttackTime < 0)
-        {
-            _animator.SetTrigger(StaticUtilities.PunchID);
-        }
-    }
-
-    private void GenerateAttackTime()
-    {
-        remainingAttackTime = Random.Range(stats.MinAttackTime, stats.MaxAttackTime);
-    }
-
-    private void Traversing()
-    {
-        if (_agent.remainingDistance < _agent.stoppingDistance)
-        {
-            Debug.Log("We made it!");
-            isIdle = true;
-            _animator.SetTrigger(StaticUtilities.PoundID);
-            _agent.isStopped = true;
-        }
-    }
-
-    public void Slam()
-    {
-        Collider []c = Physics.OverlapSphere(transform.position, 5, StaticUtilities.PlayerLayer);
-
-        foreach (Collider col in c)
-        {
-            if (col.transform.TryGetComponent(out IDamagable d))
-            {
-                d.TakeDamage(gameObject, 25);
-            }
-        }
-        _animator.SetBool(StaticUtilities.IsIdleID, true);
-    }
-
-    public void Punch()
-    {
-        Collider []c = Physics.OverlapSphere(transform.position, 5, StaticUtilities.PlayerLayer);
-
-        foreach (Collider col in c)
-        {
-            if (col.transform.TryGetComponent(out IDamagable d))
-            {
-                d.TakeDamage(gameObject, 15);
-            }
-        }
-        GenerateAttackTime();
-    }
-
-
-    public GameObject GetSelf()
-    {
-        return gameObject;
+        _agent.SetDestination(Castle.Position);
+        _animator.speed = stats.AnimationSpeed;
+        _agent.speed *= stats.AnimationSpeed;
+        EnemyCount++;
     }
 
     public void OnDie()
     {
-        
+        print("I've died");
+        if (IsDead) return;
         //Ragdoll
-        isDead = true;
+        IsDead = true;
         _animator.enabled = false;
         _agent.enabled = false;
-       
-        if (cringe == null)
-        {
-            Rigidbody[] rbs = GetComponentsInChildren<Rigidbody>();
-            cringe = rbs;
-            if (PreviousAttacker.TryGetComponent(out Player p))
-            {
-                p.AddScore(stats.Value);
-                stats.OnDeath(p);
-            }
-        }
-        else
-        {
-            //Reset the sink into ground timer
-            StopAllCoroutines();
-        }
-
-        foreach (var rb in cringe)
-        {
-            rb.isKinematic = false;
-        }
-
+        OnDeath?.Invoke(this);
         StartCoroutine(GoThroughFloor());
        
     }
@@ -144,24 +63,33 @@ public class Enemy : MonoBehaviour, IDamagable
     public void OnHit(float amount)
     {
         _animator.SetTrigger(amount < 50 ? StaticUtilities.HitSmallID : StaticUtilities.HitBigID);
-        StartCoroutine(Stun());
+        AudioSource.PlayClipAtPoint(stats.HitNoise, transform.position, 10);
+        StartCoroutine(Stun(amount));
     }
 
-    private IEnumerator Stun()
+    private IEnumerator Stun(float amount)
     {
         float s = _agent.speed;
         _agent.speed = 0;
-        _animator.SetBool(StaticUtilities.IsIdleID, true);
-        yield return new WaitForSeconds(1);
-        _animator.SetBool(StaticUtilities.IsIdleID, isIdle);
+        //_animator.SetBool(StaticUtilities.IsIdleID, true);
+        yield return new WaitForSeconds(amount * stats.StunTolerance);
+        //_animator.SetBool(StaticUtilities.IsIdleID, _isIdle);
         _agent.speed = s;
-        GenerateAttackTime();
     }
     private IEnumerator GoThroughFloor()
     {
+        //This function can only ever run once, therefore it's not THAT expensive. Still not ideal.
+        // ReSharper disable once Unity.PerformanceCriticalCodeInvocation
+        Rigidbody[] rbs = GetComponentsInChildren<Rigidbody>();
+        
+        foreach (var rb in rbs)
+        {
+            rb.isKinematic = false;
+        }
+        
         yield return new WaitForSeconds(stats.PhaseThroughFloorTime);
 
-        foreach (Rigidbody rb in cringe)
+        foreach (Rigidbody rb in rbs)
         {
             rb.isKinematic = true;
         }
@@ -169,7 +97,7 @@ public class Enemy : MonoBehaviour, IDamagable
         while (true)
         {
             transform.position += Vector3.down * (Time.deltaTime * stats.FallSpeed);
-            if (transform.position.y < -5)
+            if (transform.position.y < 5)
             {
                 Destroy(gameObject);    
             }
@@ -178,4 +106,20 @@ public class Enemy : MonoBehaviour, IDamagable
         }
     }
 
+    private void OnDestroy()
+    {
+        --EnemyCount;//Doesn't matter which enemy is dead, none of them will be
+        if (EnemyCount <= 0 && GameManager.GameRunning) // Realistically, == is fine
+        {
+           GameManager.Instance.EndDay();
+        }
+    }
+
+    private void OnDisable()
+    {
+        //Well an unintended side effect of this, is that they will all ragdoll xD
+        //_animator.enabled = false;
+        _animator.speed = 0;
+        _agent.enabled = false;
+    }
 }

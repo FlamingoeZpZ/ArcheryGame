@@ -22,10 +22,7 @@ public class Projectile : MonoBehaviour
 
     public void Init(float chargePercent, GameObject owner)
     {
-        charge = chargePercent; 
-        
-        print(Mathf.Lerp(Stats.MinSpeed, Stats.MaxSpeed, charge));
-        
+        charge = chargePercent;
         rb.AddForce(transform.forward * Mathf.Lerp(Stats.MinSpeed, Stats.MaxSpeed, charge), ForceMode.Impulse);
         Owner = owner;
     }
@@ -53,7 +50,6 @@ public class Projectile : MonoBehaviour
     private void OnCollisionEnter(Collision other)
     {
         rb.isKinematic = true;
-        Debug.Log("I hit: " + other.gameObject.name);
         OnHit(other,other.contacts[0].point);
         c.enabled = false;
     }
@@ -63,16 +59,17 @@ public class Projectile : MonoBehaviour
         //Take Impact Damage and bind effects
         Stats.PlayOnHit(other.gameObject.layer, hitPoint);
         
-        if (other.transform.root.TryGetComponent(out IDamagable damagable))
+        if (other.transform.root.GetChild(0).TryGetComponent(out IDamagable damagable))
         {
-            damagable.TakeDamage(Owner, Mathf.Lerp(Stats.MinDamage, Stats.MaxDamage, charge));
+            //damagable.TakeDamage(Owner, Mathf.Lerp(Stats.MinDamage, Stats.MaxDamage, charge));
+            damagable.TakeDamage(Mathf.Lerp(Stats.MinDamage, Stats.MaxDamage, charge));
         }
 
         if (other.rigidbody)
         {
             other.rigidbody.AddForce(rb.velocity, ForceMode.Impulse);
         }
-
+        
         transform.position = hitPoint;
         transform.parent = other.transform;
     }

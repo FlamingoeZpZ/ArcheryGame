@@ -15,5 +15,6 @@ public static class StaticUtilities
     public static readonly int IsIdleID = Animator.StringToHash("IsIdle");
 
     public static readonly int PlayerLayer = 1 << LayerMask.NameToLayer("Player");
+    public static readonly int EnemyLayer = 1 << LayerMask.NameToLayer("Player");
 
 }

@@ -21,7 +21,8 @@ public class ExplosiveArrow : Projectile
 
             if (c.transform.root.TryGetComponent(out IDamagable ctx))
             {
-                ctx.TakeDamage(Owner , explosionStats.Damage );
+                //ctx.TakeDamage(Owner , explosionStats.Damage );
+                ctx.TakeDamage(explosionStats.Damage );
             }
             
             if (other.rigidbody)

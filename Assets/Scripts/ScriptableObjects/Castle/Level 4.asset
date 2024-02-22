@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 824fdf306bf327641a8ed950039c63ab, type: 3}
   m_Name: Level 4
   m_EditorClassIdentifier: 
-  <MaxHealth>k__BackingField: 100
-  <CoinMultiplier>k__BackingField: 1
-  <Cost>k__BackingField: 0
+  <MaxHealth>k__BackingField: 750
+  <CoinMultiplier>k__BackingField: 2
+  <Cost>k__BackingField: 50

@@ -4,15 +4,24 @@ using UnityEngine;
 [DefaultExecutionOrder(-1000)]
 public class GameManager : MonoBehaviour
 {
-    
     public static Action OnRoundBegin;
+    
+    //Game
     public static int CurrentDay { get; private set; }
+    
+    //Stats (Belong to the game)
+    public static float Coins { get; private set; }
     public static int DefeatedCount { get; private set; }
+    
     
     [SerializeField] private GameObject menu;
     [SerializeField] private FinalGameUI finalScreen;
     [SerializeField] private GameUI gameUI;
     [SerializeField] private Transform spawnedEnemyParent;
+
+    [SerializeField] private Castle castle;
+    [SerializeField] private Player localPlayer; //If you wanted to correct this for multiplayer, you'd need to spawn the player and bind it.
+    
     public static GameManager Instance { get; private set; }
     public static bool GameRunning { get; set; }
 
@@ -27,7 +36,11 @@ public class GameManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        Enemy.OnDeath += (x) => DefeatedCount++;
+        Enemy.OnDeath += (x) =>
+        {
+            //Coins += x.EnemyStats.Value * castle.CastleValueMultiplier;   
+            DefeatedCount++;
+        };
         Cursor.lockState = CursorLockMode.Confined;
         PlayerControls.DisableControls();
     }

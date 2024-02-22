@@ -58,8 +58,8 @@ public class Projectile : MonoBehaviour
     {
         //Take Impact Damage and bind effects
         Stats.PlayOnHit(other.gameObject.layer, hitPoint);
-        
-        if (other.transform.root.GetChild(0).TryGetComponent(out IDamagable damagable))
+        IDamagable damagable = other.transform.GetComponentInParent<IDamagable>();
+        if (damagable != null)// && articulationBody.TryGetComponent(out IDamagable damagable))
         {
             //damagable.TakeDamage(Owner, Mathf.Lerp(Stats.MinDamage, Stats.MaxDamage, charge));
             damagable.TakeDamage(Mathf.Lerp(Stats.MinDamage, Stats.MaxDamage, charge));

@@ -10,6 +10,11 @@ public class Player : MonoBehaviour
     [Header("Weapons")]
     [SerializeField] private Weapon weapon;
     
+    //Levels
+    public int WeaponLevel { get; private set; }
+    public int ProjectileLevel { get; private set; } 
+    
+    
     // Start is called before the first frame update
     void Awake()
     {

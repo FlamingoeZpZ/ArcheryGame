@@ -9,6 +9,7 @@ public class EnemySo : ScriptableObject
     [field: SerializeField] public float Damage { get; private set; }
     [field: SerializeField] public float Value { get; private set; }
     [field: SerializeField] public float AnimationSpeed { get; private set; }
+    [field: SerializeField] public float Speed { get; private set; }
 
     [field: SerializeField] public AudioClip HitNoise { get; private set; }
     [field: SerializeField] public float StunTolerance { get; private set; }

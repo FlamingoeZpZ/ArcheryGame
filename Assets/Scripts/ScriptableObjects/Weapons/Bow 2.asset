@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Bow 2
   m_EditorClassIdentifier: 
   <MinChargePercent>k__BackingField: 0.2
-  <FullChargeTime>k__BackingField: 4
+  <FullChargeTime>k__BackingField: 0.7
   <IsFullAuto>k__BackingField: 1
-  holdTime: 5
+  holdTime: 10
+  <Cost>k__BackingField: 15

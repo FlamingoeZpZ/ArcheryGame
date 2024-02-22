@@ -21,12 +21,7 @@ public class Parabola : MonoBehaviour
 
         _weapon.OnCanShoot += () => _lr.enabled = true;
         _weapon.OnShoot += () => _lr.enabled = false;
-    }
-
-    private void OnDestroy()
-    {
-        _weapon.OnCanShoot += () => _lr.enabled = true;
-        _weapon.OnShoot += () => _lr.enabled = false;
+        _weapon.OnShootCancel += () => _lr.enabled = false;
     }
 
 
@@ -64,12 +59,5 @@ public class Parabola : MonoBehaviour
         
         
         _lr.SetPositions(_positions);
-        //We need to set each point based on a parabola.
-        //y = ax^2 + bx + c
-        //X is distance,
-        //a is gravity?
-        //b is pullback force
-        //c is offset.
-        
     }
 }

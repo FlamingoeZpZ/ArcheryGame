@@ -25,6 +25,7 @@ public class Weapon : MonoBehaviour
     public Projectile ProjectileType => projectile;
     public Action OnCanShoot { get; set; }
     public Action OnShoot { get; set; }
+    public Action OnShootCancel { get; set; }
 
     public float CurrentFirePower() => Mathf.Lerp(projectile.Stats.MinSpeed, projectile.Stats.MaxSpeed,
         (_currentFireDuration / weaponStats.FullChargeTime));
@@ -76,20 +77,17 @@ public class Weapon : MonoBehaviour
     
     public void BeginFire()
     {
-        print("Begin Firing");
-        StartCoroutine(FireTimer());
-        _animator.SetBool(StaticUtilities.IsFiringID ,true);
         _isFiring = true;
-        
+        _animator.SetBool(StaticUtilities.IsFiringID ,true);
+        StartCoroutine(FireTimer());
     }
 
     public void EndFire()
     {
-        print("End Firing");
+        _isFiring = false; // MUST BE FIRST
         StopAllCoroutines();
         TryFire();
-        //_bowAudioSource.loop = false;
-        _isFiring = false;
+      
     }
 
     protected virtual void Fire(float percent)
@@ -139,6 +137,7 @@ public class Weapon : MonoBehaviour
         else
         {
             _animator.SetBool(StaticUtilities.IsFiringID ,false);
+            OnShootCancel.Invoke();
         }
     }
 

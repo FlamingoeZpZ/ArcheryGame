@@ -43,7 +43,7 @@ public class Enemy : MonoBehaviour, IDamagable
         _animator = GetComponent<Animator>();
         _agent.SetDestination(Castle.Position);
         _animator.speed = stats.AnimationSpeed;
-        _agent.speed *= stats.AnimationSpeed;
+        _agent.speed = stats.Speed * stats.AnimationSpeed;
         EnemyCount++;
     }
 

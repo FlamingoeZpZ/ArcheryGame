@@ -3,8 +3,10 @@ using UnityEngine;
 
 public class Castle : MonoBehaviour, IDamagable // By being I damagble, we allow other things to hurt us like bombs
 {
-    [field: SerializeField] public float MaxHealth { get; set; }
+    [SerializeField] private CastleSO[] castleLevels;
     [SerializeField] private AudioClip hitNoise;
+    
+    public float MaxHealth { get; set; }
     public float CurrentHealth { get; set; }
     public static Vector3 Position { get; private set; }
 
@@ -12,29 +14,38 @@ public class Castle : MonoBehaviour, IDamagable // By being I damagble, we allow
     private AudioSource _audioSource;
     
     
+    public int CastleLevel { get; private set; }
+    public float CastleValueMultiplier => castleLevels[CastleLevel].CoinMultiplier;
 
+    public void Upgrade()
+    {
+        CastleLevel++;
+        MaxHealth = castleLevels[CastleLevel].MaxHealth;
+        CurrentHealth = MaxHealth;
+    }
+    
+    
     private void Start()
     {
-        CurrentHealth = MaxHealth;
         Position = transform.GetChild(0).position;
         _impulseSource = GetComponent<CinemachineImpulseSource>();
         _audioSource = GetComponent<AudioSource>();
+        
+        MaxHealth = castleLevels[CastleLevel].MaxHealth;
+        CurrentHealth = MaxHealth;
         
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if(other.attachedArticulationBody.TryGetComponent(out Enemy e) && !e.IsDead)
+        Enemy e = other.transform.GetComponentInParent<Enemy>();
+        if(e && !e.IsDead)
         {
-            //Take damage
-            //That's bizzare we can't ask ourselves to take damage?
-            //CurrentHealth -= e.EnemyStats.Damage;
+            print("I've been hit: " + e.EnemyStats.Damage);
             (this as IDamagable).TakeDamage(e.EnemyStats.Damage);
             
             //Destroy enemy
             Destroy(e.gameObject);
-            
-           //if(CurrentHealth < MaxHealth) OnDie();
         }
     }
 
@@ -47,6 +58,7 @@ public class Castle : MonoBehaviour, IDamagable // By being I damagble, we allow
     public void OnHit(float amount)
     {
         //Update health UI
+        
         
         //Play impulse
         _impulseSource.GenerateImpulseWithForce(amount * 5);

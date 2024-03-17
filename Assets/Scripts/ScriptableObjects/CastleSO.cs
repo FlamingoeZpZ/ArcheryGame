@@ -8,5 +8,4 @@ public class CastleSO : ScriptableObject
 {
     [field:SerializeField] public float MaxHealth { get; private set; }
     [field:SerializeField] public float CoinMultiplier { get; private set; }
-    [field: SerializeField] public float Cost { get; private set; }
 }

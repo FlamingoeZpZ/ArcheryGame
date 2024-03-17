@@ -74,4 +74,8 @@ public class Projectile : MonoBehaviour
         transform.parent = other.transform;
     }
 
+    public void SetStats(ProjectileSO statsReplace)
+    {
+        Stats = statsReplace;
+    }
 }

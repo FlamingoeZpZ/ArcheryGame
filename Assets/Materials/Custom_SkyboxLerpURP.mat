@@ -46,9 +46,9 @@ Material:
     m_Ints: []
     m_Floats:
     - _BlendCubemaps: 0
-    - _Exposure: 0.24982019
+    - _Exposure: 0.74439734
     - _LerpAmount: 0.618
-    - _Rotation: 125.28774
+    - _Rotation: 22.615192
     m_Colors:
     - _MainLightDirection: {r: 0, g: 1, b: 0, a: 1}
     - _SunColor: {r: 1, g: 1, b: 1, a: 1}

@@ -12,10 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb59dba0398bd3a4d97ad32a00ae13ea, type: 3}
   m_Name: BombArrow
   m_EditorClassIdentifier: 
-  <MinSpeed>k__BackingField: 15
-  <MaxSpeed>k__BackingField: 40
+  <MinSpeed>k__BackingField: 25
+  <MaxSpeed>k__BackingField: 50
   <MinDamage>k__BackingField: 0
   <MaxDamage>k__BackingField: 0
-  <Cost>k__BackingField: 200
-  <Icon>k__BackingField: {fileID: 0}
   HitSounds: []

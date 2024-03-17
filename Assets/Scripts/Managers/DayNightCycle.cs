@@ -27,7 +27,6 @@ public class DayNightCycle : MonoBehaviour
     public static bool IsActive = false;
 
     private static float dayProgression;
-    public static float GetProgression() => dayProgression;
 
     private void Start()
     {

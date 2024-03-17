@@ -9,7 +9,7 @@ public class ExplosiveArrow : Projectile
     protected override void OnHit(Collision other, Vector3 hitPoint)
     {
         explosionStats.PlayExplosive(hitPoint);
-        Collider [] cols = Physics.OverlapSphere(hitPoint, explosionStats.ExplosionRadius);
+        Collider [] cols = Physics.OverlapSphere(hitPoint, explosionStats.ExplosionRadius, StaticUtilities.EnemyLayer);
             
         foreach (Collider c in cols)
         {
@@ -19,10 +19,10 @@ public class ExplosiveArrow : Projectile
             Vector3 normalized = direction / dist;
             float perc = explosionStats.DamageFallOff.Evaluate(1-Mathf.Min(1,dist/explosionStats.ExplosionRadius));
 
-            if (c.transform.root.TryGetComponent(out IDamagable ctx))
+            IDamagable damagable = c.transform.GetComponentInParent<IDamagable>();
+            if (damagable != null)
             {
-                //ctx.TakeDamage(Owner , explosionStats.Damage );
-                ctx.TakeDamage(explosionStats.Damage );
+                damagable.TakeDamage(explosionStats.Damage );
             }
             
             if (other.rigidbody)

@@ -13,5 +13,4 @@ MonoBehaviour:
   m_Name: Level 2
   m_EditorClassIdentifier: 
   <MaxHealth>k__BackingField: 250
-  <CoinMultiplier>k__BackingField: 1.2
-  <Cost>k__BackingField: 5
+  <CoinMultiplier>k__BackingField: 1.5

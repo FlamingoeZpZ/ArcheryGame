@@ -12,7 +12,6 @@ public class WeaponSO : ScriptableObject
     
     [SerializeField, Tooltip("How long you can hold an arrow before it fires anyways")] private float holdTime;
     
-    [field: SerializeField] public float Cost { get; private set; }
 
     public WaitForSeconds HoldTime { get; private set; }
 

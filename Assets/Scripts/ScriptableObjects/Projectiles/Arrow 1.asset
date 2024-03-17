@@ -12,12 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb59dba0398bd3a4d97ad32a00ae13ea, type: 3}
   m_Name: Arrow 1
   m_EditorClassIdentifier: 
-  <MinSpeed>k__BackingField: 25
-  <MaxSpeed>k__BackingField: 60
+  <MinSpeed>k__BackingField: 35
+  <MaxSpeed>k__BackingField: 75
   <MinDamage>k__BackingField: 30
   <MaxDamage>k__BackingField: 200
-  <Cost>k__BackingField: 15
-  <Icon>k__BackingField: {fileID: 0}
   HitSounds:
   - sound: {fileID: 8300000, guid: fb5f87ebbfca2794db227becca732a07, type: 3}
     targetLayer:

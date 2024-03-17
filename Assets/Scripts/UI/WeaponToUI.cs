@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 namespace UI
 {
+    //OLD (for equipping new weapons and buttons)
     public class WeaponToUI : MonoBehaviour
     {
 
@@ -31,7 +32,7 @@ namespace UI
         {
             Button btn = Instantiate(prefab, parent);
             //btn.onClick.AddListener(() => PlayerControls.Instance.OnSwapProjectile(projectile));
-            btn.transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = projectile.Stats.Icon;
+            //btn.transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = projectile.Stats.Icon;
             TextMeshProUGUI tmp = btn.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
             tmp.text = amount.ToString();
             ammoValues.Add(projectile, tmp);

@@ -36,15 +36,15 @@ public class Weapon : MonoBehaviour
     public void Init(GameObject owner)
     {
         _owner = owner;
+        _fake = Instantiate(projectile, firePoint.position, firePoint.rotation, firePoint);
+        _fake.enabled = false;
     }
 
-    private void Start()
+    private void OnEnable()
     {
         _animator = GetComponent<Animator>();
         _bowAudioSource = GetComponent<AudioSource>();
-        _fake = Instantiate(projectile, firePoint.position, firePoint.rotation, firePoint);
-        _fake.enabled = false;
-        //p.transform.eulerAngles += new Vector3(0, -90, 0);
+        _animator.speed /= weaponStats.FullChargeTime;
     }
 
 
@@ -132,20 +132,26 @@ public class Weapon : MonoBehaviour
         if (CanFire(firePercent))
         {
             Fire(firePercent);
-            OnShoot.Invoke();
+            OnShoot?.Invoke();
         }
         else
         {
             _animator.SetBool(StaticUtilities.IsFiringID ,false);
-            OnShootCancel.Invoke();
+            OnShootCancel?.Invoke();
         }
     }
 
     public void SetProjectile(Projectile projectile1)
     {
         projectile = projectile1;
-        
+        Destroy(_fake); // remove the old one.
         _fake = Instantiate(projectile, firePoint.position, firePoint.rotation, firePoint);
         _fake.enabled = false;
+    }
+
+    public void SetStats(WeaponSO statsReplace)
+    {
+        weaponStats = statsReplace;
+        _animator.speed /= weaponStats.FullChargeTime;
     }
 }

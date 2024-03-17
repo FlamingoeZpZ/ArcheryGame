@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 [DefaultExecutionOrder(100)]
 public class Enemy : MonoBehaviour, IDamagable
@@ -21,6 +22,7 @@ public class Enemy : MonoBehaviour, IDamagable
     private Animator _animator;
 
     [SerializeField] private EnemySo stats;
+    [SerializeField] private Slider healthSlider;
 
     private float _remainingAttackTime;
     
@@ -49,7 +51,6 @@ public class Enemy : MonoBehaviour, IDamagable
 
     public void OnDie()
     {
-        print("I've died");
         if (IsDead) return;
         //Ragdoll
         IsDead = true;
@@ -57,7 +58,7 @@ public class Enemy : MonoBehaviour, IDamagable
         _agent.enabled = false;
         OnDeath?.Invoke(this);
         StartCoroutine(GoThroughFloor());
-       
+       healthSlider.gameObject.SetActive(false);
     }
 
     public void OnHit(float amount)
@@ -65,6 +66,7 @@ public class Enemy : MonoBehaviour, IDamagable
         _animator.SetTrigger(amount < 50 ? StaticUtilities.HitSmallID : StaticUtilities.HitBigID);
         AudioSource.PlayClipAtPoint(stats.HitNoise, transform.position, 10);
         StartCoroutine(Stun(amount));
+        healthSlider.value = CurrentHealth / MaxHealth;
     }
 
     private IEnumerator Stun(float amount)

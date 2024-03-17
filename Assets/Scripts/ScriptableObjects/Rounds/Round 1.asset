@@ -15,8 +15,5 @@ MonoBehaviour:
   <SpawnedEnemies>k__BackingField:
   - spawnObject: {fileID: 207083450649666711, guid: e13547b0c77df1845adc540604d7e768,
       type: 3}
-    amount: 10
-  - spawnObject: {fileID: 8039405234655117358, guid: 29290092fdab20b4c927c9be78a82aef,
-      type: 3}
-    amount: 2
-  <DayDuration>k__BackingField: 60
+    amount: 8
+  <DayDuration>k__BackingField: 30

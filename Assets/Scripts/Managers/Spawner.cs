@@ -21,10 +21,11 @@ public class Spawner : MonoBehaviour
     private void Start()
     {
         GameManager.OnRoundBegin += StartRound;
+        GameManager.OnGameEnd += ClearEnemies;
         enabled = false;
     }
 
-    private void StartRound()
+    private void ClearEnemies()
     {
         if (spawnParent.childCount > 0)
         {
@@ -33,8 +34,12 @@ public class Spawner : MonoBehaviour
                 Destroy(spawnParent.GetChild(i).gameObject);
             }
         }
+    }
 
-        _currentRound = rounds[GameManager.CurrentDay];
+    private void StartRound()
+    {
+        ClearEnemies();
+        _currentRound = rounds[Mathf.Min(GameManager.CurrentDay, rounds.Length-1)];
         DayNightCycle.DayDuration = _currentRound.DayDuration + 20;
         
         _numEnemies = 0;

@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb9b4cb18004a744da960918e53ae785, type: 3}
   m_Name: Bow 1
   m_EditorClassIdentifier: 
-  <MinChargePercent>k__BackingField: 0.2
+  <MinChargePercent>k__BackingField: 0.5
   <FullChargeTime>k__BackingField: 0.8
   <IsFullAuto>k__BackingField: 1
-  holdTime: 7
-  <Cost>k__BackingField: 5
+  holdTime: 2

@@ -19,7 +19,10 @@ public class Parabola : MonoBehaviour
         transform.SetParent(w.firePoint);
         transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
 
-        _weapon.OnCanShoot += () => _lr.enabled = true;
+        _weapon.OnCanShoot += () =>
+        {
+            _lr.enabled = true;
+        };
         _weapon.OnShoot += () => _lr.enabled = false;
         _weapon.OnShootCancel += () => _lr.enabled = false;
     }
@@ -28,13 +31,12 @@ public class Parabola : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+       
         _lr = GetComponent<LineRenderer>();
         _lr.enabled = false;
         _positions = new Vector3[numNodes];
         _lr.positionCount = numNodes;
-        Init(transform.root.GetComponentInChildren<Weapon>());
-        _positions[0].Set(0,0,0);
-        
+        Init(transform.parent.GetComponent<Weapon>());
     }
 
     // Update is called once per frame

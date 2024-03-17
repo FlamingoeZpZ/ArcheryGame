@@ -8,40 +8,54 @@ public class PlayerControls : MonoBehaviour
     //However, it costs more to have this be outside of player.
     //The choice will lie in the developers ideals.
 
-    private Player _p;
+    public static Player LocalPlayer { get; private set; } // We do this to allow for multiplayer support, and prefabbing objects without dependency.
     private static PlayerControls _self;
     
     public static void DisableControls()
     {
         _self.enabled = false;
         Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.Confined;
+        LocalPlayer.EndFire(); //For safety.
     }
 
     public static void EnableControls()
     {
         _self.enabled = true;
         Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
 
-    private void Awake()
+    private void Start()
     {
-        _p = GetComponent<Player>();
+        LocalPlayer = GetComponent<Player>();
         _self = this;
-        enabled = false;
+        _self.enabled = false;
+        Cursor.visible = true;
     }
 
     private void Update()
     {
         //Old input system. Mouse X and Mouse Y also simulate fingers.
-        _p.Aim(new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")));
+        
 
-#if UNITY_EDITOR || UNITY_STANDALONE // Windows or Editor
-        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) _p.BeginFire();
-        else if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1)) _p.EndFire();
+#if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBGL	  // Windows or Editor
+        LocalPlayer.Aim(new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")));
+        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) LocalPlayer.BeginFire();
+        else if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1)) LocalPlayer.EndFire();
 #else
-        if (Input.GetTouch(0).phase == TouchPhase.Began) p.BeginFire();
-        if (Input.GetTouch(0).phase == TouchPhase.Ended) p.BeginFire();
+        switch (Input.touchCount)
+        {
+            case 2:
+                LocalPlayer.Aim(Input.GetTouch(0).deltaPosition);
+                if (Input.GetTouch(1).phase == TouchPhase.Began) LocalPlayer.BeginFire();
+                if (Input.GetTouch(1).phase == TouchPhase.Ended) LocalPlayer.EndFire();
+                break;
+            case 1:
+                LocalPlayer.Aim(Input.GetTouch(0).deltaPosition);
+                break;
+        }
 #endif
     }
 

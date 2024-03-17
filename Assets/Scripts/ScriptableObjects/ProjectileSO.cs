@@ -11,9 +11,6 @@ public class ProjectileSO : ScriptableObject
     [field: SerializeField] public float MaxSpeed { get; private set; }
     [field: SerializeField] public float MinDamage { get; private set; }
     [field: SerializeField] public float MaxDamage { get; private set; }
-    [field: SerializeField] public float Cost { get; private set; }
-    
-    [field: SerializeField] public Sprite Icon { get; private set; }
     
     [SerializeField] private AudioPairing[] HitSounds;
 

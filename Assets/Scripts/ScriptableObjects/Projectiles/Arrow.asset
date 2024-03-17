@@ -15,8 +15,7 @@ MonoBehaviour:
   <MinSpeed>k__BackingField: 15
   <MaxSpeed>k__BackingField: 50
   <MinDamage>k__BackingField: 15
-  <MaxDamage>k__BackingField: 100
-  <Icon>k__BackingField: {fileID: 0}
+  <MaxDamage>k__BackingField: 150
   HitSounds:
   - sound: {fileID: 8300000, guid: fb5f87ebbfca2794db227becca732a07, type: 3}
     targetLayer:

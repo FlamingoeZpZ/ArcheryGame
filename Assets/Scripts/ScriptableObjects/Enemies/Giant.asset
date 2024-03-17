@@ -15,7 +15,7 @@ MonoBehaviour:
   <MaxHealth>k__BackingField: 1500
   <PhaseThroughFloorTime>k__BackingField: 3
   <FallSpeed>k__BackingField: 1
-  <Damage>k__BackingField: 10
+  <Damage>k__BackingField: 100
   <Value>k__BackingField: 20
   <AnimationSpeed>k__BackingField: 0.4
   <Speed>k__BackingField: 3

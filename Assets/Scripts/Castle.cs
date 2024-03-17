@@ -3,7 +3,9 @@ using UnityEngine;
 
 public class Castle : MonoBehaviour, IDamagable // By being I damagble, we allow other things to hurt us like bombs
 {
-    [SerializeField] private CastleSO[] castleLevels;
+    private CastleSO castleLevel;
+    
+    //[SerializeField] private CastleSO[] castleLevels;
     [SerializeField] private AudioClip hitNoise;
     
     public float MaxHealth { get; set; }
@@ -12,28 +14,19 @@ public class Castle : MonoBehaviour, IDamagable // By being I damagble, we allow
 
     private CinemachineImpulseSource _impulseSource;
     private AudioSource _audioSource;
-    
-    
-    public int CastleLevel { get; private set; }
-    public float CastleValueMultiplier => castleLevels[CastleLevel].CoinMultiplier;
+    public float CastleValueMultiplier => castleLevel.CoinMultiplier;
 
-    public void Upgrade()
-    {
-        CastleLevel++;
-        MaxHealth = castleLevels[CastleLevel].MaxHealth;
-        CurrentHealth = MaxHealth;
-    }
+    public static Castle Instance { get; private set; }
+
     
-    
-    private void Start()
+    private void OnEnable()
     {
         Position = transform.GetChild(0).position;
         _impulseSource = GetComponent<CinemachineImpulseSource>();
         _audioSource = GetComponent<AudioSource>();
         
-        MaxHealth = castleLevels[CastleLevel].MaxHealth;
-        CurrentHealth = MaxHealth;
-        
+        Instance = this;
+
     }
 
     void OnTriggerEnter(Collider other)
@@ -58,10 +51,10 @@ public class Castle : MonoBehaviour, IDamagable // By being I damagble, we allow
     public void OnHit(float amount)
     {
         //Update health UI
-        
+        GameManager.healthBar.value = CurrentHealth / MaxHealth;
         
         //Play impulse
-        _impulseSource.GenerateImpulseWithForce(amount * 5);
+        _impulseSource.GenerateImpulseWithForce(1);
         
         //Play sonud
         _audioSource.PlayOneShot(hitNoise);
@@ -72,5 +65,12 @@ public class Castle : MonoBehaviour, IDamagable // By being I damagble, we allow
     {
         //Update health UI
         CurrentHealth = amount;
+        GameManager.healthBar.value = CurrentHealth / MaxHealth;
+    }
+    public void SetStats(CastleSO statsReplace)
+    {
+        castleLevel = statsReplace;
+        MaxHealth = castleLevel.MaxHealth;//castleLevels[CastleLevel].MaxHealth;
+        SetHealth(MaxHealth);
     }
 }

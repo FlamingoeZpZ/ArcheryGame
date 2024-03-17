@@ -18,5 +18,5 @@ MonoBehaviour:
     amount: 30
   - spawnObject: {fileID: 8039405234655117358, guid: 29290092fdab20b4c927c9be78a82aef,
       type: 3}
-    amount: 2
-  <DayDuration>k__BackingField: 160
+    amount: 10
+  <DayDuration>k__BackingField: 60
